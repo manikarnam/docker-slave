@@ -1,23 +1,14 @@
 pipeline {
-    agent { label 'docker_label' }
-
-    options {
-        timeout(time: 2, unit: 'MINUTES')
-        buildDiscarder(logRotator(daysToKeepStr: '10'))
-        timestamps()
-    }
-
-    triggers {
-        pollSCM('H/24 * * * *') // once a day in case some hooks are missed
-    }
-
+    agent any
     stages {
-        stage('Build Docker Image') {
+        stage('Build image') {
             steps {
-                deleteDir()
-                checkout scm
-                sh 'docker build -t jenkins/slave .'
+                echo 'Starting to build docker image'
+
+                script {
+                    def customImage = docker.build("my-image:${env.BUILD_ID}")
+                    customImage.push()
+                }
             }
         }
     }
-}
