@@ -1,11 +1,22 @@
 pipeline {
-    agent {label 'docker_label'}
-        docker { image 'node:7-alpine' }
+    agent { label 'docker_label' }
+
+    options {
+        timeout(time: 2, unit: 'MINUTES')
+        buildDiscarder(logRotator(daysToKeepStr: '10'))
+        timestamps()
     }
+
+    triggers {
+        pollSCM('H/24 * * * *') // once a day in case some hooks are missed
+    }
+
     stages {
-        stage('Build') {
+        stage('Build Docker Image') {
             steps {
-                sh 'docker images'
+                deleteDir()
+                checkout scm
+                sh 'make build'
             }
         }
     }
