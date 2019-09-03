@@ -1,6 +1,6 @@
 #!groovy
 pipeline {
-    agent any
+    agent any{ label 'docker_label'}
 
     stages {
         stage('Build') {
