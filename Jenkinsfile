@@ -1,6 +1,6 @@
 #!groovy
 pipeline {
-    agent any{ label 'slave_node'}
+    agent { label 'slave_node'}
 
     stages {
         stage('Build') {
